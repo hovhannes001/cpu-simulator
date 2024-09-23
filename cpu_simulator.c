@@ -56,15 +56,18 @@ int main() {
             result = strtok(NULL, " ,");
             operands[0] = strtok(NULL,", \n");
             mov(cpu,result,atoi(operands[0]));
+            IP++;
         }
         else if(!strncmp(token,"load",strlen("load")) || !strncmp(token,"store",strlen("store"))){
             result = strtok(NULL, " ,");
             operands[0] = strtok(NULL,", \n");
             if(!strncmp(token,"load",strlen("load"))) {
                 load_and_store(OP_LOAD,cpu,result,atoi(operands[0]));
+                IP++;
             }
             if(!strncmp(token,"store",strlen("store"))) {
                 load_and_store(OP_STORE,cpu,result,atoi(operands[0]));
+                IP++;
             }
         }
 
@@ -75,35 +78,22 @@ int main() {
             }
             if(!strncmp(token,"add",strlen("add"))) {
                 ALU(OP_ADD,cpu,result,operands);              
+                IP++;
             }
             else if(!strncmp(token,"sub",strlen("sub"))) {
                 ALU(OP_SUB,cpu,result,operands);
+                IP++;
             }
-            else {
-                printf("Invalid input\n");
-            }
-            if(write(file,cpu,sizeof(cpu)) < 0) {
-                perror("write failed: ");
-                exit(EXIT_FAILURE);
-            }
-        }
     else if (!strncmp(token, "disc", strlen("disc"))) {
         operands[0] = strtok(NULL, ", \n");
-        printf("operand: %s\n",operands[0]);
         int records_back = atoi(operands[0]);
         
         off_t file_size = lseek(file, 0, SEEK_END);
-
+    // if the struct file size is smaller than size of struct
         if (file_size < sizeof(CPU)) {
             printf("File doesn't contain enough CPU data.\n");
             exit(EXIT_FAILURE);
         }
-
-        if (records_back < 1 || sizeof(CPU) * records_back > file_size) {
-            printf("Invalid records_back value or insufficient file data.\n");
-            exit(EXIT_FAILURE);
-        }
-
         
         if (lseek(file, -(sizeof(CPU) * records_back), SEEK_END) < 0) {
             perror("lseek failed");
@@ -118,15 +108,17 @@ int main() {
         printf("Loaded previous CPU state.\n");
         memory_print(cpu);  
     }
-
-
-        else{
+            else {
                 printf("Invalid input\n");
             }
-        if (write(file, cpu, sizeof(CPU)) < 0) {
-            perror("write failed: ");
-            exit(EXIT_FAILURE);
+
+            //struct write in file database.txt
+            if(write(file,cpu,sizeof(cpu)) < 0) {
+                perror("write failed: ");
+                exit(EXIT_FAILURE);
+            }
         }
+
     }
     close(file);
     free(result);
