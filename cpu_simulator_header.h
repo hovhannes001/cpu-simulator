@@ -17,12 +17,13 @@
 #define OP_SUB 2
 #define OP_LOAD 4
 #define OP_STORE 5
+#define REGISTER_COUNT 7
 
 extern bool WSR;
 extern int IP;
 
 typedef struct {
-    int r[7];
+    int r[REGISTER_COUNT];
     int RAM[MEMORY_SIZE];
 } CPU;
 
