@@ -23,6 +23,7 @@ int main() {
     while(true) {
         fgets(instruction,BUFFER_SIZE - 2,stdin);
         token = strtok(instruction, " ");
+         //start check ------------------
         if(strncmp(token,"start",strlen("start")) == 0) {
             if(WSR == 0){
                 WSR = 1;
@@ -33,6 +34,7 @@ int main() {
         else if(WSR == 0 && strncmp(token,"exit",strlen("exit"))) {
             printf("Enter first 'start'\n");
         }
+            //exit check ------------------
         else if(strncmp(token,"exit",strlen("exit")) == 0) {
             if(WSR == 0) {
                 printf("Terminating CPU Simulator...\n\n\n");
@@ -47,17 +49,20 @@ int main() {
             }
             IP++;
         }
+             //layo check ------------------
         else if(strncmp(token,"layo",strlen("layo")) == 0) {
                 printf("CPU State: \n");
                 IP++;
                 memory_print(cpu);
         }
+             //mov check ------------------
         else if(!strncmp(token,"mov",strlen("mov"))) {
             result = strtok(NULL, " ,");
             operands[0] = strtok(NULL,", \n");
             mov(cpu,result,atoi(operands[0]));
             IP++;
         }
+             //load and store check ------------------
         else if(!strncmp(token,"load",strlen("load")) || !strncmp(token,"store",strlen("store"))){
             result = strtok(NULL, " ,");
             operands[0] = strtok(NULL,", \n");
@@ -70,7 +75,7 @@ int main() {
                 IP++;
             }
         }
-
+     //add and sub check ------------------
         else if(!strncmp(token,"add",strlen("add")) || !strncmp(token,"sub",strlen("sub"))){       
             result = strtok(NULL, " ,");
             for(int i = 0;i < MAX_COUNT_REGISTERS;i++) {
@@ -84,6 +89,7 @@ int main() {
                 ALU(OP_SUB,cpu,result,operands);
                 IP++;
             }
+                 //disc check ------------------
     else if (!strncmp(token, "disc", strlen("disc"))) {
         operands[0] = strtok(NULL, ", \n");
         int records_back = atoi(operands[0]);
@@ -107,6 +113,7 @@ int main() {
 
         printf("Loaded previous CPU state.\n");
         memory_print(cpu);  
+        IP++;
     }
             else {
                 printf("Invalid input\n");
